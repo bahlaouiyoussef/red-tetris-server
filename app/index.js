@@ -5,8 +5,13 @@ if (process.env.NODE_ENV == "development") {
   require("dotenv").config();
 }
 
+io.use(function auth(socket, next) {
+  next();
+});
+
 io.on("connection", function onConnection(socket) {
-  console.log("client connected")
+  console.log(`Client connected ${socket.id}`, socket.handshake.headers);
+  socket.emit("message", "hello from server");
 });
 
 module.exports = io;
