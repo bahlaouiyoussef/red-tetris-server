@@ -1,13 +1,16 @@
 {
-  "name": "micro-serivce-ref",
+  "name": "red-tetris-api",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "engines": {
+    "node": ">=14.15.3"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "eslint": "eslint",
+    "lint": "eslint",
     "format": "prettier --write ."
   },
   "keywords": [],
