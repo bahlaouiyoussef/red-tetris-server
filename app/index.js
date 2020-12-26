@@ -10,8 +10,12 @@ io.use(function auth(socket, next) {
 });
 
 io.on("connection", function onConnection(socket) {
-  console.log(`Client connected ${socket.id}`, socket.handshake.headers);
+  console.log(`Client connected ${socket.id}`);
+  // console.log("headers", socket.handshake.headers);
   socket.emit("message", "hello from server");
+  socket.on("message", function onMessage(message) {
+    console.log(message);
+  });
 });
 
 module.exports = io;
