@@ -6,7 +6,11 @@ class Piece {
 
     this._setName(name);
     this._setMatrix(matrix);
-    this._vector = new Vector(0, 0);
+    this._position = new Vector(0, 0);
+  }
+
+  clone() {
+    var newPiece = new Piece();
   }
 
   _setName(name) {
@@ -25,7 +29,7 @@ class Piece {
     return this._matrix;
   }
 
-  rotate() {
+  rotateRight() {
     var matrix = this.getMatrix();
 
     var rotatedMatrix = createMatrix(matrix.length);
