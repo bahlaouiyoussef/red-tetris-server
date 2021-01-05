@@ -1,9 +1,13 @@
 var io = require("socket.io")(3000);
+var redisAdapter = require("socket.io-redis");
 
-if (process.env.NODE_ENV == "development") {
+if (process.env.NODE_ENV != "production") {
   // eslint-disable-next-line
   require("dotenv").config();
 }
+io.adapter(
+  redisAdapter({ host: process.env.REDIS_HOST, port: process.env.REDIS_PORT })
+);
 
 io.use(function auth(socket, next) {
   next();
