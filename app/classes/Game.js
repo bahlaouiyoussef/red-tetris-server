@@ -5,15 +5,13 @@ var isFunction = require("../utils/isFunction");
 var pieces = require("./pieces.json");
 
 class Game {
-  constructor(columns, rows) {
+  constructor() {
     this._players = [];
-    this.setColumns(columns);
-    this.setRows(rows);
   }
 
   addPlayer(playerName) {
     var player = new Player(playerName);
-    player.initBoard(this.getBoardColumns(), this.getBoardRows());
+    player.initBoard(10, 20);
     this._players.push(player);
   }
 
@@ -52,21 +50,24 @@ class Game {
     var piece = this._getRandomPiece();
 
     this.getPlayers().forEach(function setCurrentPiece(player) {
-      player.getBoard().setCurrentPiece(piece.clone())
+      player.getBoard().setCurrentPiece(piece.clone());
     });
 
     setInterval(() => {
+      // console.clear();
       this.update();
 
       if (isFunction(callback)) {
         callback();
       }
-    }, 2000);
+    }, 100);
   }
 
   update() {
     this.getPlayers().forEach(function goDown(player) {
-      player.getBoard().getBoard().fall();
+      player.getBoard().fall();
+      player.getBoard().display();
+      console.log("-------------------");
     });
   }
 }

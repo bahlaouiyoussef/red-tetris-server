@@ -4,6 +4,6 @@ var Board = require("../app/classes/Board");
 var game = new Game("room-name");
 
 game.addPlayer("oxidia");
-game.addPlayer("0.00011");
+// game.addPlayer("0.00011");
 
 game.start();

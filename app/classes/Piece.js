@@ -2,18 +2,36 @@ var Vector = require("./Vector");
 
 class Piece {
   constructor(piece) {
-    var { name, matrix } = piece;
-
-    this._setName(name);
-    this._setMatrix(matrix);
     this._position = new Vector(0, 0);
+
+    if (piece) {
+      var { name, matrix } = piece;
+
+      this.setName(name);
+      this.setMatrix(matrix);
+    }
   }
 
   clone() {
     var newPiece = new Piece();
+
+    newPiece.setName(this.getName());
+    newPiece.setMatrix(this.getMatrix());
+
+    return newPiece;
   }
 
-  _setName(name) {
+  trim() {
+    return this.getMatrix().filter(function isNotEmpty(row) {
+      return row.every(v => v);
+    });
+  }
+
+  getPosition() {
+    return this._position;
+  }
+
+  setName(name) {
     this._name = name;
   }
 
@@ -21,8 +39,10 @@ class Piece {
     return this._name;
   }
 
-  _setMatrix(matrix) {
-    this._matrix = matrix;
+  setMatrix(matrix) {
+    this._matrix = matrix.map(function newRow(row) {
+      return [...row];
+    });
   }
 
   getMatrix() {
@@ -45,7 +65,7 @@ class Piece {
 
     this._setMatrix(rotatedMatrix);
 
-    // -------------
+    // ---------------
     function createMatrix(length) {
       var matrix = new Array(length).fill(0);
 
