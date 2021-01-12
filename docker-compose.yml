@@ -9,5 +9,9 @@ services:
       - ./:/app
     ports:
       - ${PORT}:3000
+    stdin_open: true
+    tty: true
+    environment:
+      - CHOKIDAR_USEPOLLING=1
   redis:
     image: redis
