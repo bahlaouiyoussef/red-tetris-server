@@ -9,6 +9,7 @@ class Piece {
 
       this.setName(name);
       this.setMatrix(matrix);
+      this._trimedMatrix = null;
     }
   }
 
@@ -22,9 +23,40 @@ class Piece {
   }
 
   trim() {
-    return this.getMatrix().filter(function isNotEmpty(row) {
-      return row.every(v => v);
+    if (this._trimedMatrix) {
+      return this._trimedMatrix;
+    }
+
+    var newPiece = this.getMatrix().filter(function isNotEmpty(row) {
+      return row.some((v) => v);
     });
+
+    const minCol = newPiece.reduce(getMinCol, newPiece.length);
+    const maxCol = newPiece.reduce(getMaxCol, 0);
+
+    this._trimedMatrix = newPiece.map(function (row) {
+      return row.slice(minCol, maxCol + 1);
+    });
+
+    return this._trimedMatrix;
+
+    function getMinCol(minCol, row) {
+      var curMinCol = row.indexOf(1);
+      if (curMinCol >= 0) {
+        return minCol < curMinCol ? minCol : curMinCol;
+      } else {
+        return minCol;
+      }
+    }
+
+    function getMaxCol(maxCol, row) {
+      var curMaxCol = row.lastIndexOf(1);
+      if (curMaxCol >= 0) {
+        return maxCol > curMaxCol ? maxCol : curMaxCol;
+      } else {
+        return maxCol;
+      }
+    }
   }
 
   getPosition() {
@@ -49,7 +81,33 @@ class Piece {
     return this._matrix;
   }
 
+  moveRight() {
+    this.trim();
+
+    const x = this.getPosition().getX();
+
+    this.getPosition().setX(x + 1);
+    return true;
+  }
+
+  moveLeft() {
+    this.trim();
+
+    const x = this.getPosition().getX();
+
+    this.getPosition().setX(x - 1);
+    return true;
+  }
+
+  moveDown() {
+    const y = this.getPosition().getY();
+
+    this.getPosition().setY(y + 1);
+  }
+
   rotateRight() {
+    this._trimedMatrix = null;
+
     var matrix = this.getMatrix();
 
     var rotatedMatrix = createMatrix(matrix.length);

@@ -1,18 +1,48 @@
 var Piece = require("./Piece");
 var Player = require("./Player");
-var isFunction = require("../utils/isFunction");
 
 var pieces = require("./pieces.json");
 
 class Game {
-  constructor() {
+  constructor(name) {
+    this._setName(name);
+
     this._players = [];
+    this._pieces = [
+      this._getRandomPiece(),
+      this._getRandomPiece(),
+      this._getRandomPiece(),
+      this._getRandomPiece(),
+      this._getRandomPiece()
+    ];
+  }
+
+  _setName(name) {
+    this._name = name;
+  }
+  getName() {
+    return this._name;
+  }
+
+  getPlayerByName(playerName) {
+    return this.getPlayers().find(equals(playerName));
+
+    function equals(str) {
+      return function strEquals(player) {
+        return str == player.getName();
+      };
+    }
   }
 
   addPlayer(playerName) {
-    var player = new Player(playerName);
-    player.initBoard(10, 20);
-    this._players.push(player);
+    var player = this.getPlayerByName(playerName);
+
+    if (!player) {
+      player = new Player(playerName, Math.random(), this);
+      player.initBoard(10, 20);
+      this._players.push(player);
+    }
+    return player;
   }
 
   _initPiece() {
@@ -46,29 +76,30 @@ class Game {
     return this._players;
   }
 
-  start(callback) {
+  stop() {
+    clearInterval(this._interval);
+  }
+
+  start() {
     var piece = this._getRandomPiece();
+    // var piece = this._getPieceByName("T");
 
     this.getPlayers().forEach(function setCurrentPiece(player) {
       player.getBoard().setCurrentPiece(piece.clone());
     });
 
-    setInterval(() => {
-      // console.clear();
-      this.update();
-
-      if (isFunction(callback)) {
-        callback();
-      }
-    }, 100);
-  }
-
-  update() {
-    this.getPlayers().forEach(function goDown(player) {
-      player.getBoard().fall();
-      player.getBoard().display();
-      console.log("-------------------");
-    });
+    this._interval = setInterval(() => {
+      console.clear();
+      this.getPlayers().forEach((player) => {
+        var isFalling = player.getBoard().fall();
+        if (!isFalling) {
+          player.getBoard().setCurrentPiece(this._pieces.shift().clone());
+          this._pieces.push(this._getRandomPiece());
+        }
+        player.getBoard().display();
+        console.log("-------------------");
+      });
+    }, 500);
   }
 }
 
